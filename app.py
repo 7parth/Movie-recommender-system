@@ -19,6 +19,7 @@ def fetch_poster(m_id):
     }
     response = requests.get(url, headers=headers)
     data = response.json()
+    print(data)
     return "https://image.tmdb.org/t/p/" + data['poster_path']
     
 def recommend(movie):
@@ -44,6 +45,12 @@ selected_movie_name = st.selectbox('Select Your Movie Of Liking', movie_titles)
 if st.button('Recommend'):
     names,posters = recommend(selected_movie_name)
     
-    col1,col2,col3 = st.beta_colums(3)
-    with col1:
-        st.header("A cat")
+    col = st.beta_colums(5)
+
+    for i in range(0,5):
+        
+        with col[i]:
+            st.header(names[i])
+            st.image(posters[i])
+
+    
