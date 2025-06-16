@@ -20,7 +20,7 @@ def fetch_poster(m_id):
     response = requests.get(url, headers=headers)
     data = response.json()
     print(data)
-    return "https://image.tmdb.org/t/p/" + data['poster_path']
+    return "https://image.tmdb.org/t/p/original/" + data['poster_path']
     
 def recommend(movie):
     movie_index = movies[movies['title'] == movie].index[0]
@@ -30,7 +30,7 @@ def recommend(movie):
     recommended_movies = []
     recommended_movies_posters = []
     for i in movies_list:
-        movie_id = i[0]
+        movie_id = movies_df.iloc[i[0]].movie_id  # Correct TMDB ID
         
         recommended_movies.append(movies.iloc[i[0]]['title'])
         
@@ -45,7 +45,7 @@ selected_movie_name = st.selectbox('Select Your Movie Of Liking', movie_titles)
 if st.button('Recommend'):
     names,posters = recommend(selected_movie_name)
     
-    col = st.beta_colums(5)
+    col = st.columns(5)
 
     for i in range(0,5):
         
