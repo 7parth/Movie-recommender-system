@@ -2,6 +2,12 @@ import streamlit as st
 import pickle 
 import pandas as pd
 import requests
+from dotenv import load_dotenv
+import os
+from pathlib import Path
+
+env_path = Path('.') / '.env'
+load_dotenv(dotenv_path=env_path)
 
 movies_df = pickle.load(open('movies.pkl','rb'))
 movies = movies_df[['title']]
@@ -13,10 +19,11 @@ similarity = pickle.load(open('similarity.pkl','rb'))
 def fetch_poster(m_id):
     
     url = "https://api.themoviedb.org/3/movie/{}?language=en-US".format(m_id)
+   
     headers = {
-        "accept": "application/json",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlM2RiZjIyNzA2NzFmNzk4MzRlNGZkYWI0M2UzYTlmNiIsIm5iZiI6MTc0MTAxNzYzNi41NTEsInN1YiI6IjY3YzVkMjI0NmNhOTAzNWE2YTdhODFmZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.pPjcSGGY9RtsRBZ4Efa7zFGff-F67QNm3eBxJqiAdIM"
-    }
+    "accept": "application/json",
+    "Authorization": f"Bearer {os.getenv('TMDB_BEARER_TOKEN')}"
+    }   
     response = requests.get(url, headers=headers)
     data = response.json()
     print(data)
@@ -30,7 +37,7 @@ def recommend(movie):
     recommended_movies = []
     recommended_movies_posters = []
     for i in movies_list:
-        movie_id = movies_df.iloc[i[0]].movie_id  # Correct TMDB ID
+        movie_id = movies_df.iloc[i[0]].movie_id 
         
         recommended_movies.append(movies.iloc[i[0]]['title'])
         
@@ -50,7 +57,7 @@ if st.button('Recommend'):
     for i in range(0,5):
         
         with col[i]:
-            st.header(names[i])
+            st.text(names[i])
             st.image(posters[i])
 
     
